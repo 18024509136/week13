@@ -15,7 +15,7 @@ start.time, end.time, data.consumed.in.MB, MB.sec, data.consumed.in.nMsg, nMsg.s
 2021-06-24 12:01:23:520, 2021-06-24 12:01:25:455, 95.3674, 49.2855, 100000, 51679.5866, 1624507284329, -1624507282394, -0.0000, -0.0001  
 
 ### spring kafka 下对 kafka 集群的操作 ###
-这里专注于spring kafka的生产和消费操作，具体注意的事项在代码注释中有说明  
+请参考spring-kafka项目，这里专注于spring kafka的生产和消费操作，具体注意的事项在代码注释中有说明  
 - 配置文件请参考application.yml，包含producer、consumer、listener的配置，注意其中的transaction-id-prefix、listener.type、listener.concurrency对生产和消费模式有较大影响
 - com.geek.springkafka.KafkaController负责生产消息，simpleSend()在同步模式下发送消息，callbackSend()在异步模式下发送消息，transactionalSend()在事务模式下发送消息
 - com.geek.springkafka.CustomizePartitioner为自定义分区器，根据消息的哈希取余定位到对应的分区
@@ -26,6 +26,7 @@ start.time, end.time, data.consumed.in.MB, MB.sec, data.consumed.in.nMsg, nMsg.s
 
 ## 作业2 ##
 思考和设计自定义 MQ 第二个版本或第三个版本，写代码实现其中至少一个功能点，把设计思路和实现代码，提交到 GitHub。   
+请参考my-mq项目   
 - com.geek.mymq.Mq为队列实际操作和管理类，维护消息的入队和出队，也维护不同消费组的消费offset，其中使用了LinkedList来模拟队列
 - com.geek.mymq.Broker为代理者，负责创建主题、生产者和消费者，同时作为代理来传递消息入队列，拉取消息出队列以及提交ack到队列，来避免生产者和消费者直接和队列交互，降低耦合度
 - com.geek.mymq.Producer为生产者，负责发送序列化后的消息数据到broker，其中序列化类为com.geek.mymq.MsgSerializer。  
