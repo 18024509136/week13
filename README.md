@@ -3,7 +3,7 @@
 ### 3节点kafka集群搭建与性能测试 ###
 - 在本地5台虚拟机bigdata01~bigdata05上搭建kafka集群。由于是大数据集群，出于资源复用考虑，kafka注册用的zookeeper复用了大数据环境的zookeeper
 - 部署文档请参考有道云笔记链接 https://note.youdao.com/s/RAjsWNCy
-- 功能与性能测试，单台节点配置为4核12G
+- 功能与性能测试，单台节点配置为4核12G  
 (1)创建测试主题 kafka-topics.sh --zookeeper bigdata03:2181 --create --topic test1 --partitions 3 --replication-factor 2  
 (2)生产性能测试结果：  
 kafka-producer-perf-test.sh --topic test1 --num-records 100000 --record-size 1000 --throughput 200000 --producer-props bootstrap.servers=bigdata03:9092  
@@ -29,9 +29,9 @@ start.time, end.time, data.consumed.in.MB, MB.sec, data.consumed.in.nMsg, nMsg.s
 - com.geek.mymq.Mq为队列实际操作和管理类，维护消息的入队和出队，也维护不同消费组的消费offset，其中使用了LinkedList来模拟队列
 - com.geek.mymq.Broker为代理者，负责创建主题、生产者和消费者，同时作为代理来传递消息入队列，拉取消息出队列以及提交ack到队列，来避免生产者和消费者直接和队列交互，降低耦合度
 - com.geek.mymq.Producer为生产者，负责发送序列化后的消息数据到broker，其中序列化类为com.geek.mymq.MsgSerializer。  
-将序列化、加密、压缩等操作（这里是实现了序列化）放到生产端进行，可以极大地简化broker端的逻辑和降低broker的压力
-- com.geek.mymq.Consumer为消费者，但只负责消费主题的调度，比如推或拉模式（这里选择了拉模式），需要拿到哪个主题的消息，以及对原始消息进行解密、解压缩、反序列化的操作（这里是实现了发序列化），  
-不关心具体的消费业务逻辑。这里的反序列化类为com.geek.mymq.MsgDeserializer
+将序列化、加密、压缩等操作（这里只实现了序列化）放到生产端进行，可以极大地简化broker端的逻辑和降低broker的压力
+- com.geek.mymq.Consumer为消费者，但只负责消费主题的调度，比如推或拉模式（这里选择了拉模式），需要拿到哪个主题的消息，以及对原始消息进行解密、解压缩、反序列化的操作（这里只实现了发序列化），   
+不关心具体的消费业务逻辑。同理也是为了简化broker端的逻辑和降低broker的压力。这里的反序列化类为com.geek.mymq.MsgDeserializer
 - 具体的消息消费逻辑就放到了com.geek.mymq.AbstractListener的实现当中，是作为com.geek.mymq.Consumer的poll()方法一个回调函数
 - 抽象的消息实体为com.geek.mymq.Message，分消息头和消息体。这里消息体模拟了一个com.geek.mymq.Order实体类
 - com.geek.mymq.MyMqApplication的run()为整个项目的测试方法，模拟了2个不同的消费组对主题test1.topic进行同时消费
