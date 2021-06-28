@@ -34,4 +34,4 @@ start.time, end.time, data.consumed.in.MB, MB.sec, data.consumed.in.nMsg, nMsg.s
 不关心具体的消费业务逻辑。同理也是为了简化broker端的逻辑和降低broker的压力。这里的反序列化类为com.geek.mymq.MsgDeserializer
 - 具体的消息消费逻辑就放到了com.geek.mymq.AbstractListener的实现当中，是作为com.geek.mymq.Consumer的poll()方法一个回调函数
 - 抽象的消息实体为com.geek.mymq.Message，分消息头和消息体。这里消息体模拟了一个com.geek.mymq.Order实体类
-- com.geek.mymq.MyMqApplication的run()为整个项目的测试方法，模拟了2个不同的消费组对主题test1.topic进行同时消费
+- com.geek.mymq.MyMqApplication的run()为整个项目的测试方法，模拟了1个生产线程不断往test1.topic生产消息，同时2个不同消费组的消费线程对主题test1.topic进行同时消费
